@@ -1,0 +1,7 @@
+/obj
+/Temp
+/.vs
+/Assets/*.meta
+*.meta
+/Library
+/win_Data
