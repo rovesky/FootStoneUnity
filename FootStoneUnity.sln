@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootStoneUnity", "FootStoneUnity.csproj", "{99C5779E-369E-5FFB-03A7-23CA47177DD5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{C95C28B5-5C43-1DA5-DCC3-C602F5076209}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootStoneProtocol", "..\FootStoneProtocol\FootStoneProtocol.csproj", "{24560466-B329-413A-9530-07B12AC58A65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +11,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{99C5779E-369E-5FFB-03A7-23CA47177DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99C5779E-369E-5FFB-03A7-23CA47177DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99C5779E-369E-5FFB-03A7-23CA47177DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99C5779E-369E-5FFB-03A7-23CA47177DD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C95C28B5-5C43-1DA5-DCC3-C602F5076209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C95C28B5-5C43-1DA5-DCC3-C602F5076209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C95C28B5-5C43-1DA5-DCC3-C602F5076209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C95C28B5-5C43-1DA5-DCC3-C602F5076209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24560466-B329-413A-9530-07B12AC58A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24560466-B329-413A-9530-07B12AC58A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24560466-B329-413A-9530-07B12AC58A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24560466-B329-413A-9530-07B12AC58A65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

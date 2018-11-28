@@ -1,0 +1,77 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": "a43668528a71c3d1940a3722f4c171fd2960fad9"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "iceboxnet/3.7.1": {
+        "dependencies": {
+          "Ice": "3.7.1",
+          "IceBox": "3.7.1",
+          "IceSSL": "3.7.1"
+        },
+        "runtime": {
+          "iceboxnet.dll": {}
+        }
+      },
+      "zeroc.icebuilder.msbuild/5.0.4": {},
+      "Ice/3.7.1": {
+        "dependencies": {
+          "zeroc.icebuilder.msbuild": "5.0.4"
+        },
+        "runtime": {
+          "Ice.dll": {}
+        }
+      },
+      "IceBox/3.7.1": {
+        "dependencies": {
+          "Ice": "3.7.1",
+          "zeroc.icebuilder.msbuild": "5.0.4"
+        },
+        "runtime": {
+          "IceBox.dll": {}
+        }
+      },
+      "IceSSL/3.7.1": {
+        "dependencies": {
+          "Ice": "3.7.1",
+          "zeroc.icebuilder.msbuild": "5.0.4"
+        },
+        "runtime": {
+          "IceSSL.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "iceboxnet/3.7.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "zeroc.icebuilder.msbuild/5.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cVsmwpAd9yavJ0ktfH7b4J00+vri1oEH3n1V027lgCaTf7PdzILvKDLmkA3JYVhjT1W3WYe3ef90L02VuZBHXw==",
+      "path": "zeroc.icebuilder.msbuild/5.0.4",
+      "hashPath": "zeroc.icebuilder.msbuild.5.0.4.nupkg.sha512"
+    },
+    "Ice/3.7.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IceBox/3.7.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IceSSL/3.7.1": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
