@@ -14,8 +14,9 @@ public class Test : MonoBehaviour {
     private Text btn_text;
 	// Use this for initialization
 	void Start () {
-      
-        NetworkIce.Instance.Init();
+
+        //      NetworkIce.Instance.Init("192.168.206.1",12000);
+        NetworkIce.Instance.Init("192.168.3.14", 4061);
         Button btn = this.GetComponent<Button>();
         btn.onClick.AddListener(OnClick);
         btn_text = btn.transform.Find("Text").GetComponent<Text>();
@@ -40,8 +41,25 @@ public class Test : MonoBehaviour {
         {
             Debug.Log("Test init");
 
-            var sessionPrx = await NetworkIce.Instance.createSession();
-            var playerPrx = await sessionPrx.createPlayerAsync();
+            //   var sessionPrx = await NetworkIce.Instance.createSession("1");
+            //  var playerPrx = await sessionPrx.createPlayerAsync();
+
+            PlayerPrx playerPrx = null;
+            try
+            {
+                playerPrx = PlayerPrxHelper.uncheckedCast(NetworkIce.Instance.Communicator.stringToProxy("player"));
+            }
+            catch (Ice.NotRegisteredException)
+            {
+            //    var query =
+            //        IceGrid.QueryPrxHelper.checkedCast(NetworkIce.Instance.Communicator.stringToProxy("FootStone/Query"));
+            //    playerPrx = PlayerPrxHelper.checkedCast(query.findObjectByType("::FootStone::GrainInterfaces::Player"));
+            }
+            if (playerPrx == null)
+            {
+                Console.WriteLine("couldn't find a `::Player' object");
+                return ;
+            }
 
             var playerInfo = await playerPrx.getPlayerInfoAsync(Guid.NewGuid().ToString());
             btn_text.text = playerInfo.name;
@@ -51,7 +69,7 @@ public class Test : MonoBehaviour {
         catch (System.Exception ex)
         {
             btn_text.text = "ping:" + ex.StackTrace;
-            Debug.Log(ex.StackTrace);
+            Debug.LogError(ex.StackTrace);
         }
 
         //for (int i = 0; i < 1; ++i)

@@ -1,4 +1,5 @@
 ﻿using FootStone.GrainInterfaces;
+using Ice;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Network
         /// </summary>
         private NetworkIce() { }
 
-        private List<Action> actions = new List<Action>();
+        private List<Action>     actions = new List<Action>();
         private Ice.Communicator communicator;
 
         public static NetworkIce Instance
@@ -33,6 +34,18 @@ namespace Network
             }
         }
 
+        public Communicator Communicator
+        {
+            get
+            {
+                return communicator;
+            }
+
+            set
+            {
+                communicator = value;
+            }
+        }
 
         public void Update()
         {
@@ -48,19 +61,20 @@ namespace Network
             }
         }
 
-        public void Init()
+        public void Init(string IP,int port)
         {
             try
             {
                 Ice.InitializationData initData = new Ice.InitializationData();
 
                 initData.properties = Ice.Util.createProperties();
-                initData.properties.setProperty("Ice.ACM.Client.Heartbeat", "Always");
+                //initData.properties.setProperty("Ice.ACM.Client.Heartbeat", "Always");
                 //initData.properties.setProperty("Ice.RetryIntervals", "-1");
                 initData.properties.setProperty("Ice.FactoryAssemblies", "client");
                 initData.properties.setProperty("Ice.Trace.Network", "0");
-                initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h 192.168.206.1 -p 12000 -t 5000");
-
+                //    initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h "+ IP + " -p " + port +" -t 10000");
+                initData.properties.setProperty("Ice.Default.Locator", "FootStone/Locator:default -h " + IP + " -p " + port);
+                 
                 initData.dispatcher = delegate (System.Action action, Ice.Connection connection)
                 {
                     lock (this)
@@ -69,24 +83,24 @@ namespace Network
                     }                
                 };
 
-                communicator = Ice.Util.initialize(initData);
+                Communicator = Ice.Util.initialize(initData);
 
 
                 Thread thread = new Thread(new ThreadStart(() =>
                 {
-                    communicator.waitForShutdown();
+                    Communicator.waitForShutdown();
                 }));
                 thread.Start();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                Debug.Log(ex.Message);
+                Debug.LogError(ex.Message);
             }
         }
 
-        public async Task<SessionPrx> createSession()
+        public async Task<SessionPrx> createSession(string id)
         {
-            var basePrx = communicator.propertyToProxy("SessionFactory.Proxy");
+            var basePrx = Communicator.propertyToProxy("SessionFactory.Proxy");
             var factory = SessionFactoryPrxHelper.uncheckedCast(basePrx);
             if (factory == null)
             {
@@ -94,7 +108,7 @@ namespace Network
                 return null;
                
             }
-            return await factory.createAsync("1");
+            return await factory.createAsync(id);
         }
 
     }
