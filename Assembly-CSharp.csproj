@@ -269,8 +269,8 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>D:/Program Files/Unity2018.2.11f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="FootStoneProtocol">
-      <HintPath>D:/work/footstone/FootStoneUnity/Assets/Plugins/FootStoneProtocol.dll</HintPath>
+    <Reference Include="FootStone.Protocol">
+      <HintPath>D:/work/footstone/FootStoneUnity/Assets/Plugins/FootStone.Protocol.dll</HintPath>
     </Reference>
     <Reference Include="Ice">
       <HintPath>D:/work/footstone/FootStoneUnity/Assets/Plugins/Ice.dll</HintPath>

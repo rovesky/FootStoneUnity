@@ -8,6 +8,14 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
+class PlayerPushI : PlayerPushDisp_
+{
+    public override void hpChanged(int hp, Current current = null)
+    {
+        Debug.Log("new hp" + hp);
+    }
+}
+
 public class Test : MonoBehaviour {
 
   //  private string btn_name;
@@ -61,7 +69,29 @@ public class Test : MonoBehaviour {
                 return ;
             }
 
-            var playerInfo = await playerPrx.getPlayerInfoAsync(Guid.NewGuid().ToString());
+            //
+            // Create an object adapter with no name and no endpoints for receiving callbacks
+            // over bidirectional connections.
+            //
+            var adapter = NetworkIce.Instance.Communicator.createObjectAdapter("");
+
+            //
+            // Register the callback receiver servant with the object adapter
+            //
+            var proxy = PlayerPushPrxHelper.uncheckedCast(adapter.addWithUUID(new PlayerPushI()));
+
+            //
+            // Associate the object adapter with the bidirectional connection.
+            //
+            (await playerPrx.ice_getConnectionAsync()).setAdapter(adapter);
+            string id = Guid.NewGuid().ToString();
+            //
+            // Provide the proxy of the callback receiver object to the server and wait for
+            // shutdown.
+            //
+            await playerPrx.addPushAsync(id,proxy);
+
+            var playerInfo = await playerPrx.getPlayerInfoAsync(id);
             btn_text.text = playerInfo.name;
             Debug.Log(btn_text.text);
 

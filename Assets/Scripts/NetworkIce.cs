@@ -85,6 +85,8 @@ namespace Network
 
                 Communicator = Ice.Util.initialize(initData);
 
+            
+
 
                 Thread thread = new Thread(new ThreadStart(() =>
                 {
