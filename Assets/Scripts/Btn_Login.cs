@@ -16,34 +16,56 @@ class PlayerPushI : PlayerPushDisp_
     }
 }
 
-public class Test : MonoBehaviour {
+public class Btn_Login : MonoBehaviour {
 
   //  private string btn_name;
     private Text btn_text;
 	// Use this for initialization
-	void Start () {
-
-        //      NetworkIce.Instance.Init("192.168.206.1",12000);
-        NetworkIce.Instance.Init("192.168.3.14", 4061);
+	void Start () {  
+ 
         Button btn = this.GetComponent<Button>();
         btn.onClick.AddListener(OnClick);
         btn_text = btn.transform.Find("Text").GetComponent<Text>();
-        btn_text.text = "start";
+        btn_text.text = "login";
 
     }
 
     // Update is called once per frame
     void Update () {
-        //if (!btn_text.text.Equals(btn_name))
-        //{
-        //    btn_text.text = btn_name;
-        //}
-        NetworkIce.Instance.Update();     
+      
+        
     }
 
 
 
     private async void OnClick()
+    {
+        try
+        {
+            Debug.Log("Login init");
+
+            var accountPrx = NetworkIce.Instance.accountPrx;
+
+            string account = GameObject.Find("input_account").GetComponent<InputField>().text;
+            string password = GameObject.Find("input_password").GetComponent<InputField>().text;
+
+            await accountPrx.LoginRequestAsync(new LoginInfo(account, password));
+           // btn_text.text = playerInfo.name;
+            Debug.Log(btn_text.text);
+        }
+        catch (AccountException accountEx)
+        {
+            Debug.LogError(accountEx.ice_message_);
+        }
+        catch (System.Exception ex)
+        {
+            btn_text.text = "ping:" + ex.StackTrace;
+            Debug.LogError(ex.StackTrace);
+        }
+
+    }
+
+    private async System.Threading.Tasks.Task GetPlayerInfo()
     {
         try
         {
@@ -59,14 +81,14 @@ public class Test : MonoBehaviour {
             }
             catch (Ice.NotRegisteredException)
             {
-            //    var query =
-            //        IceGrid.QueryPrxHelper.checkedCast(NetworkIce.Instance.Communicator.stringToProxy("FootStone/Query"));
-            //    playerPrx = PlayerPrxHelper.checkedCast(query.findObjectByType("::FootStone::GrainInterfaces::Player"));
+                //    var query =
+                //        IceGrid.QueryPrxHelper.checkedCast(NetworkIce.Instance.Communicator.stringToProxy("FootStone/Query"));
+                //    playerPrx = PlayerPrxHelper.checkedCast(query.findObjectByType("::FootStone::GrainInterfaces::Player"));
             }
             if (playerPrx == null)
             {
                 Console.WriteLine("couldn't find a `::Player' object");
-                return ;
+                return;
             }
             string id = Guid.NewGuid().ToString();
             var ctx = playerPrx.ice_getContext();
@@ -92,9 +114,9 @@ public class Test : MonoBehaviour {
             // Provide the proxy of the callback receiver object to the server and wait for
             // shutdown.
             //
-            await playerPrx.addPushAsync(id,proxy);
+            await playerPrx.AddPushAsync(proxy);
 
-            var playerInfo = await playerPrx.getPlayerInfoAsync(id);
+            var playerInfo = await playerPrx.GetPlayerInfoAsync();
             btn_text.text = playerInfo.name;
             Debug.Log(btn_text.text);
 
@@ -104,22 +126,5 @@ public class Test : MonoBehaviour {
             btn_text.text = "ping:" + ex.StackTrace;
             Debug.LogError(ex.StackTrace);
         }
-
-        //for (int i = 0; i < 1; ++i)
-        //    {
-        //        player.begin_getPlayerInfo(Guid.NewGuid().ToString()).whenCompleted(
-        //        (playerInfo) =>
-        //        {
-
-        //        },
-        //        (Ice.Exception ex) =>
-        //        {
-        //            btn_text.text = "getPlayerInfo:" + ex.StackTrace;
-        //            Debug.Log(ex.Message);
-        //        });
-        //    }
-
-
-
     }
 }

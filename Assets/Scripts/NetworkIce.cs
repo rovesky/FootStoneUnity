@@ -22,6 +22,12 @@ namespace Network
         private List<Action>     actions = new List<Action>();
         private Ice.Communicator communicator;
 
+        public SessionPrx SessionPrx { get; private set; }
+        public AccountPrx accountPrx { get; private set; }
+
+        public PlayerPrx PlayerPrx {  get ;  set; }
+
+
         public static NetworkIce Instance
         {
             get
@@ -47,6 +53,8 @@ namespace Network
             }
         }
 
+        public string PlayerId { get; internal set; }
+
         public void Update()
         {
             Action[] array;
@@ -61,7 +69,7 @@ namespace Network
             }
         }
 
-        public void Init(string IP,int port)
+        public async void Init(string IP,int port)
         {
             try
             {
@@ -83,10 +91,27 @@ namespace Network
                     }                
                 };
 
-                Communicator = Ice.Util.initialize(initData);
+                communicator = Ice.Util.initialize(initData);
 
-            
+                SessionPrx = SessionPrxHelper.uncheckedCast(communicator.stringToProxy("session"));
 
+                var adapter = communicator.createObjectAdapter("");
+
+                //
+                // Register the callback receiver servant with the object adapter
+                //
+                var proxy = SessionPushPrxHelper.uncheckedCast(adapter.addWithUUID(new SessionPushI()));
+
+                //
+                // Associate the object adapter with the bidirectional connection.
+                //
+                (await SessionPrx.ice_getConnectionAsync()).setAdapter(adapter);
+
+                //
+                // Provide the proxy of the callback receiver object to the server and wait for
+                // shutdown.
+                //
+                await SessionPrx.AddPushAsync(proxy);
 
                 Thread thread = new Thread(new ThreadStart(() =>
                 {
@@ -99,19 +124,11 @@ namespace Network
                 Debug.LogError(ex.Message);
             }
         }
+             
 
-        public async Task<SessionPrx> createSession(string id)
-        {
-            var basePrx = Communicator.propertyToProxy("SessionFactory.Proxy");
-            var factory = SessionFactoryPrxHelper.uncheckedCast(basePrx);
-            if (factory == null)
-            {
-                Debug.LogError("invalid proxy");
-                return null;
-               
-            }
-            return await factory.createAsync(id);
-        }
+    }
 
+    internal class SessionPushI : SessionPushDisp_
+    {
     }
 }
