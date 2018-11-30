@@ -68,7 +68,10 @@ public class Test : MonoBehaviour {
                 Console.WriteLine("couldn't find a `::Player' object");
                 return ;
             }
-
+            string id = Guid.NewGuid().ToString();
+            var ctx = playerPrx.ice_getContext();
+            ctx["playerId"] = id;
+            playerPrx = (PlayerPrx)playerPrx.ice_context(ctx);
             //
             // Create an object adapter with no name and no endpoints for receiving callbacks
             // over bidirectional connections.
@@ -84,7 +87,7 @@ public class Test : MonoBehaviour {
             // Associate the object adapter with the bidirectional connection.
             //
             (await playerPrx.ice_getConnectionAsync()).setAdapter(adapter);
-            string id = Guid.NewGuid().ToString();
+
             //
             // Provide the proxy of the callback receiver object to the server and wait for
             // shutdown.
