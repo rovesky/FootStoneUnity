@@ -80,6 +80,7 @@ namespace Network
                 //initData.properties.setProperty("Ice.RetryIntervals", "-1");
                 initData.properties.setProperty("Ice.FactoryAssemblies", "client");
                 initData.properties.setProperty("Ice.Trace.Network", "0");
+                initData.properties.setProperty("Ice.Default.Timeout", "15");
                 //    initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h "+ IP + " -p " + port +" -t 10000");
                 initData.properties.setProperty("Ice.Default.Locator", "FootStone/Locator:default -h " + IP + " -p " + port);
                  
@@ -130,5 +131,9 @@ namespace Network
 
     internal class SessionPushI : SessionPushDisp_
     {
+        public override void SessionDestroyed(Current current = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -114,7 +114,7 @@ public class Btn_Login : MonoBehaviour {
             // Provide the proxy of the callback receiver object to the server and wait for
             // shutdown.
             //
-            await playerPrx.AddPushAsync(proxy);
+          //  await playerPrx.AddPushAsync(proxy);
 
             var playerInfo = await playerPrx.GetPlayerInfoAsync();
             btn_text.text = playerInfo.name;
