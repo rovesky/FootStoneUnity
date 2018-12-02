@@ -22,6 +22,7 @@ namespace Network
         private List<Action>     actions = new List<Action>();
         private Ice.Communicator communicator;
 
+        public SessionFactoryPrx SessionFactoryPrx { get; private set; }
         public SessionPrx SessionPrx { get; private set; }
         public AccountPrx accountPrx { get; private set; }
 
@@ -79,40 +80,23 @@ namespace Network
                 //initData.properties.setProperty("Ice.ACM.Client.Heartbeat", "Always");
                 //initData.properties.setProperty("Ice.RetryIntervals", "-1");
                 initData.properties.setProperty("Ice.FactoryAssemblies", "client");
-                initData.properties.setProperty("Ice.Trace.Network", "0");
+                initData.properties.setProperty("Ice.Trace.Network", "2");
                 initData.properties.setProperty("Ice.Default.Timeout", "15");
-                //    initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h "+ IP + " -p " + port +" -t 10000");
+               // initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h "+ IP + " -p 12000");
                 initData.properties.setProperty("Ice.Default.Locator", "FootStone/Locator:default -h " + IP + " -p " + port);
-                 
+
                 initData.dispatcher = delegate (System.Action action, Ice.Connection connection)
                 {
                     lock (this)
                     {
                         actions.Add(action);
-                    }                
+                    }
                 };
 
                 communicator = Ice.Util.initialize(initData);
+                SessionFactoryPrx = SessionFactoryPrxHelper.uncheckedCast(communicator.stringToProxy("sessionFactory"));
+               // SessionFactoryPrx = SessionFactoryPrxHelper.uncheckedCast(communicator.propertyToProxy("SessionFactory.Proxy"));
 
-                SessionPrx = SessionPrxHelper.uncheckedCast(communicator.stringToProxy("session"));
-
-                var adapter = communicator.createObjectAdapter("");
-
-                //
-                // Register the callback receiver servant with the object adapter
-                //
-                var proxy = SessionPushPrxHelper.uncheckedCast(adapter.addWithUUID(new SessionPushI()));
-
-                //
-                // Associate the object adapter with the bidirectional connection.
-                //
-                (await SessionPrx.ice_getConnectionAsync()).setAdapter(adapter);
-
-                //
-                // Provide the proxy of the callback receiver object to the server and wait for
-                // shutdown.
-                //
-                await SessionPrx.AddPushAsync(proxy);
 
                 Thread thread = new Thread(new ThreadStart(() =>
                 {
@@ -122,11 +106,40 @@ namespace Network
             }
             catch (System.Exception ex)
             {
-                Debug.LogError(ex.Message);
+                Console.WriteLine(ex.Message);
             }
         }
              
+        public async Task<SessionPrx> CreateSession(string name)
+        {
+            SessionPrx = await SessionFactoryPrx.CreateSessionAsync("name1", "");
+            Connection connection = await SessionPrx.ice_getConnectionAsync();
+            Console.WriteLine("session connection: ACM=" + 
+                JsonUtility.ToJson(connection.getACM())
+                + ",Endpoint=" + JsonUtility.ToJson(connection.getEndpoint()));
 
+            var adapter = communicator.createObjectAdapter("");
+
+            // Register the callback receiver servant with the object adapter               
+            var proxy = SessionPushPrxHelper.uncheckedCast(adapter.addWithUUID(new SessionPushI()));
+            adapter.addFacet(new PlayerPushI(), proxy.ice_getIdentity(), "playerPush");
+            // Associate the object adapter with the bidirectional connection.
+            connection.setAdapter(adapter);
+
+            // Provide the proxy of the callback receiver object to the server and wait for
+            // shutdown.               
+            await SessionPrx.AddPushAsync(proxy);
+            return SessionPrx;
+        }
+
+    }
+
+    internal class PlayerPushI : PlayerPushDisp_
+    {
+        public override void hpChanged(int hp, Current current = null)
+        {
+            Debug.Log("hp changed:" + hp);
+        }
     }
 
     internal class SessionPushI : SessionPushDisp_
