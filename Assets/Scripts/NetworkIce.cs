@@ -10,6 +10,38 @@ using UnityEngine;
 
 namespace Network
 {
+    public class IceLogger : Ice.Logger
+    {
+        public Ice.Logger cloneWithPrefix(string prefix)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void error(string message)
+        {
+            Debug.LogError(message);
+        }
+
+        public string getPrefix()
+        {
+            return "";
+        }
+
+        public void print(string message)
+        {
+            Debug.Log(message);
+        }
+
+        public void trace(string category, string message)
+        {
+            Debug.Log(message);
+        }
+
+        public void warning(string message)
+        {
+            Debug.Log(message);
+        }
+    }
     public class NetworkIce
     {
         private static NetworkIce _instance;
@@ -85,6 +117,7 @@ namespace Network
                // initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h "+ IP + " -p 12000");
                 initData.properties.setProperty("Ice.Default.Locator", "FootStone/Locator:default -h " + IP + " -p " + port);
 
+                initData.logger = new IceLogger();
                 initData.dispatcher = delegate (System.Action action, Ice.Connection connection)
                 {
                     lock (this)

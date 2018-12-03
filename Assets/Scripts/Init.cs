@@ -10,7 +10,7 @@ public class Init : MonoBehaviour {
 	void Start () {
         GameObject.Find("input_account").GetComponent<InputField>().text = "a1";
         GameObject.Find("input_password").GetComponent<InputField>().text = "111111";
-        NetworkIce.Instance.Init("192.168.3.15", 4061);
+        NetworkIce.Instance.Init("192.168.3.14", 4061);
     }
 	
 	// Update is called once per frame
