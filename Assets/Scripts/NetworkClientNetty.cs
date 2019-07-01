@@ -176,7 +176,14 @@ namespace FootStone.Core.Client
                     try
                     {
                         IByteBuffer[] buffers = SocketNettyHandler.msgQueue.ToArray();
-                      //  SocketNettyHandler.msgQueue.Clear();
+
+                        do
+                        {
+                            IByteBuffer discard;
+                            if(!SocketNettyHandler.msgQueue.TryDequeue(out discard))
+                                break;
+                        }
+                        while (true);
 
               
                        // logger.Info($"Received buffers.Length: {buffers.Length}");
