@@ -57,10 +57,10 @@ namespace FootStone.Core.Client
 
     class SocketNettyHandler : ChannelHandlerAdapter
     {
-   
-       // private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static SampleClient.Logger logger = new SampleClient.Logger();
+        // private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+        private static SampleClient.Logger logger = SampleClient.Logger.Instance;
         public static int playerCount = 0;
 
         public static ConcurrentQueue<IByteBuffer> msgQueue = new ConcurrentQueue<IByteBuffer>();
@@ -118,7 +118,7 @@ namespace FootStone.Core.Client
        // public override void ChannelReadComplete(IChannelHandlerContext context) => context.Flush();
 
         public override void ExceptionCaught(IChannelHandlerContext context, Exception exception)
-        {
+        {            
             logger.Error(exception);
             context.CloseAsync();
 
@@ -132,7 +132,7 @@ namespace FootStone.Core.Client
     {
         private Bootstrap bootstrap;
         //   private NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        private static SampleClient.Logger logger = new SampleClient.Logger();
+        private static SampleClient.Logger logger = SampleClient.Logger.Instance;
 
         private MultithreadEventLoopGroup group;
         private System.Timers.Timer pingTimer;
@@ -235,7 +235,7 @@ namespace FootStone.Core.Client
         public async Task<IChannel> ConnectNettyAsync(string host, int port, string playerId)
         {
             var channel =  await bootstrap.ConnectAsync(new IPEndPoint(IPAddress.Parse(host), port));
-
+            logger.Info("netty connect ok!");
             var message = channel.Allocator.DirectBuffer();
             message.WriteUnsignedShort((ushort)MessageType.PlayerHandshake);
             message.WriteStringShortUtf8(playerId);     
@@ -289,7 +289,7 @@ namespace FootStone.Core.Client
         }
 
         public async Task SendPing(IChannel channel, ushort actorId)
-        {
+        {            
             var data = channel.Allocator.DirectBuffer(4);
             data.WriteUnsignedShort((ushort)MessageType.Ping);
             data.WriteLong(DateTime.Now.Ticks);   

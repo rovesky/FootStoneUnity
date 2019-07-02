@@ -11,6 +11,7 @@ public class Init : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        
       //  NetworkIce.Instance.Update();
     }
 }

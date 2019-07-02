@@ -1,6 +1,6 @@
 ﻿using FootStone.GrainInterfaces;
 using Ice;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 //using NLog;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace FootStone.Core.Client
     {
         //     private static NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static SampleClient.Logger logger = new SampleClient.Logger();
+        private static SampleClient.Logger logger = SampleClient.Logger.Instance;
 
 
         private static NetworkClientIce _instance;
@@ -89,7 +89,7 @@ namespace FootStone.Core.Client
                 //    initData.properties.setProperty("SessionFactory.Proxy", "SessionFactory:default -h "+ IP + " -p " + port +" -t 10000");
                 initData.properties.setProperty("Ice.Default.Locator", "FootStone/Locator:default -h " + ip + " -p " + port);
 
-               // initData.logger = new NLoggerI(LogManager.GetLogger("Ice"));
+                initData.logger = new NLoggerI();
                 //initData.dispatcher = delegate (System.Action action, Ice.Connection connection)
                 //{
                 //    lock (this)
@@ -108,6 +108,7 @@ namespace FootStone.Core.Client
 
                 }));
                 thread.Start();
+                logger.Info("ice started!");
             }
             catch (System.Exception ex)
             {
@@ -152,8 +153,8 @@ namespace FootStone.Core.Client
                 logger.Warn($"{account} connecton closed!");
             });
 
-            logger.Debug(connection.getInfo().connectionId+" session connection: ACM=" +
-                JsonConvert.SerializeObject(connection.getACM())
+            logger.Debug(connection.getInfo().connectionId+" session connection: ACM=" + ""
+            //    JsonConvert.SerializeObject(connection.getACM())
                 + ",Endpoint=" + connection.getEndpoint().ToString());
             
 
@@ -183,8 +184,8 @@ namespace FootStone.Core.Client
         {
             this.name = name;
         }
-   //     private  NLog.Logger logger = LogManager.GetCurrentClassLogger();
-        private static SampleClient.Logger logger = new SampleClient.Logger();
+        //     private  NLog.Logger logger = LogManager.GetCurrentClassLogger();
+        private static SampleClient.Logger logger = SampleClient.Logger.Instance;
         public override void ZoneSync(byte[] data, Current current = null)
         {
             count++;
@@ -198,9 +199,9 @@ namespace FootStone.Core.Client
     internal class PlayerPushI : IPlayerPushDisp_
     {
         private string name;
-       // private NLog.Logger logger = LogManager.GetCurrentClassLogger();
+        // private NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static SampleClient.Logger logger = new SampleClient.Logger();
+        private static SampleClient.Logger logger = SampleClient.Logger.Instance;
         public PlayerPushI(string name)
         {
             this.name = name;

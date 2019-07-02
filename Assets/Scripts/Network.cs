@@ -2,11 +2,8 @@
 using FootStone.Core.Client;
 using FootStone.GrainInterfaces;
 using FootStone.ProtocolNetty;
-using Newtonsoft.Json;
-using NLog;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SampleClient
@@ -15,7 +12,7 @@ namespace SampleClient
     {
         //  private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        private static Logger logger = new Logger();
+        private static SampleClient.Logger logger = SampleClient.Logger.Instance;
 
         private string parseHost(string endPoint)
         {
@@ -45,6 +42,8 @@ namespace SampleClient
             {
                 clientNetty = new NetworkClientNetty();
                 clientNetty.Init();
+              //  var channel = await clientNetty.ConnectNettyAsync("192.168.0.128", 8007, "1234");
+              //  logger.Info("netty connect ok!" );
             }
 
             Run(1, 20, clientIce, clientNetty);
@@ -123,7 +122,7 @@ namespace SampleClient
 
                 //获取角色信息
                 var playerInfo = await playerPrx.GetPlayerInfoAsync();
-                logger.Debug($"{account} playerInfo:" + JsonConvert.SerializeObject(playerInfo));
+             //   logger.Debug($"{account} playerInfo:" + JsonConvert.SerializeObject(playerInfo));
 
                 IChannel channel = null;
                 System.Timers.Timer moveTimer = null;
@@ -179,7 +178,7 @@ namespace SampleClient
                     playerInfo = await playerPrx.GetPlayerInfoAsync();
                     await Task.Delay(10000);
                 }
-                logger.Info($"{account} playerInfo:" + JsonConvert.SerializeObject(playerInfo));
+              //  logger.Info($"{account} playerInfo:" + JsonConvert.SerializeObject(playerInfo));
 
                 logger.Info($"{account} playerPrx end!");
                 sessionPrx.begin_Destroy();
