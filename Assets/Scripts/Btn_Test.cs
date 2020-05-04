@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SampleClient;
+using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -27,10 +28,13 @@ public class Btn_Test : MonoBehaviour
     }
 
 
-    private   void OnClick()
+    private  async void OnClick()
     {
-        SampleClient.Network network = new SampleClient.Network();
-        network.Test(1, 0, true);      
+        //SampleClient.Network network = new SampleClient.Network();
+        //network.Test(1, 0, true);      
+
+        var network = new NetworkNew();
+        await network.Test("192.168.0.128",4061,1, 1, false);
 
     }
   
